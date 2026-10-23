@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>กล่องฝากไฟล์</title>
 <meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -76,8 +77,8 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
 .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
 .ticket{background:var(--ticket);color:#fff;border-radius:16px;padding:22px 20px;display:grid;gap:14px;justify-items:center;text-align:center}
 .ticket .lbl{color:#AEB6C8}
-.digits{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.digits span{font:600 clamp(26px,8vw,40px)/1 var(--mono);color:var(--ticket-fg);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 0;width:1.4em;text-align:center}
+.digits{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.digits span{font:600 clamp(20px,6.2vw,38px)/1 var(--mono);color:var(--ticket-fg);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 0;width:1.4em;text-align:center}
 .ticket p{margin:0;color:#C9D0DE;font-size:14px;max-width:46ch}
 .ticket .btn{background:transparent;color:#fff;border-color:rgba(255,255,255,.3)}
 .codein{font:600 28px var(--mono)!important;letter-spacing:.22em;text-transform:uppercase;text-align:center;padding:12px!important}
@@ -100,6 +101,11 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
 .pinrow input{flex:1 1 160px;min-width:0}
 footer{color:var(--muted);font-size:12px;text-align:center}
 .host{font-family:var(--mono);color:var(--ticket-fg)}
+.digits .sep{background:none;border:0;width:.5em;color:#AEB6C8}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--fg)}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);font:inherit;font-size:13px;cursor:pointer;text-decoration:underline}
+.steps{margin:0;padding-left:20px;display:grid;gap:6px;font-size:14px}
+.steps code{font-family:var(--mono);font-size:13px;background:var(--sunk);padding:1px 5px;border-radius:5px}
 .headrow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -108,7 +114,7 @@ footer{color:var(--muted);font-size:12px;text-align:center}
 <div class="wrap">
   <header>
     <h1>กล่องฝากไฟล์</h1>
-    <p>ฝากไฟล์ ลิงก์ หรือข้อความไว้ที่นี่ แล้วได้รหัส 6 ตัว เปิดหน้านี้บนอีกเครื่อง พิมพ์รหัสเดียวกัน ก็ดาวน์โหลดได้ทันที ไม่ต้องติดตั้งโปรแกรม ไม่ต้องเข้าสู่ระบบ</p>
+    <p>ฝากไฟล์ ลิงก์ หรือข้อความไว้ที่นี่ แล้วได้รหัส 8 ตัว เปิดหน้านี้บนอีกเครื่อง พิมพ์รหัสเดียวกัน ก็ดาวน์โหลดได้ทันที ไม่ต้องติดตั้งโปรแกรม ไม่ต้องเข้าสู่ระบบ</p>
   </header>
 
   <div class="tabs" role="tablist">
@@ -118,6 +124,24 @@ footer{color:var(--muted);font-size:12px;text-align:center}
 
   <!-- SEND -->
   <section id="panelSend" class="panel" role="tabpanel">
+    <div class="box" id="setupBox" hidden>
+      <h2>ตั้งค่าครั้งแรก (ทำครั้งเดียว)</h2>
+      <ol class="steps">
+        <li>สร้าง GitHub token ที่ <a id="tokenLink" target="_blank" rel="noopener noreferrer" href="https://github.com/settings/personal-access-tokens/new">github.com/settings/personal-access-tokens/new</a></li>
+        <li>Repository access เลือก <b>Only select repositories</b> → <code id="dataRepoName">beersbox-data</code></li>
+        <li>Permissions → Repository permissions → <b>Contents</b> เลือก <b>Read and write</b> แล้วกด Generate token</li>
+        <li>วาง token ด้านล่าง แล้วตั้งรหัสผ่านสำหรับส่ง (ยาวอย่างน้อย 10 ตัว)</li>
+      </ol>
+      <div class="field"><label for="setupToken">GitHub token</label><input type="password" id="setupToken" autocomplete="off" placeholder="github_pat_..."></div>
+      <div class="opts">
+        <div class="field"><label for="setupPw">รหัสผ่านสำหรับส่ง</label><input type="password" id="setupPw" autocomplete="new-password"></div>
+        <div class="field"><label for="setupPw2">พิมพ์รหัสผ่านอีกครั้ง</label><input type="password" id="setupPw2" autocomplete="new-password"></div>
+      </div>
+      <p class="note">token จะถูกล็อกด้วยรหัสผ่านนี้ก่อนบันทึก เครื่องอื่นจะใช้แค่รหัสผ่าน ไม่ต้องใส่ token อีก</p>
+      <button class="btn primary" id="setupBtn" type="button">บันทึกการตั้งค่า</button>
+      <p class="msg" id="setupMsg" hidden></p>
+    </div>
+
     <div id="sendForm" class="panel">
       <div class="box">
         <h2>ไฟล์</h2>
@@ -151,7 +175,7 @@ footer{color:var(--muted);font-size:12px;text-align:center}
               <label><input type="radio" name="codeMode" id="modeRandom" value="random" checked> สุ่มให้</label>
               <label><input type="radio" name="codeMode" id="modeCustom" value="custom"> ตั้งเอง</label>
             </div>
-            <input type="text" id="customCode" class="codein" maxlength="12" placeholder="อย่างน้อย 6 ตัว" autocomplete="off" hidden style="font-size:20px!important">
+            <input type="text" id="customCode" class="codein" maxlength="16" placeholder="อย่างน้อย 8 ตัว" autocomplete="off" hidden style="font-size:20px!important">
           </div>
           <div class="field">
             <label for="expiry">เก็บไว้นาน</label>
@@ -163,12 +187,14 @@ footer{color:var(--muted);font-size:12px;text-align:center}
             </select>
           </div>
         </div>
-        <div class="field" id="pinField" hidden>
-          <label for="pinInput">รหัสผ่านสำหรับส่ง</label>
-          <div class="pinrow">
-            <input type="password" id="pinInput" autocomplete="off" placeholder="ใส่ครั้งเดียว เครื่องนี้จะจำไว้">
+        <div class="field" id="pwField">
+          <label for="pwInput">รหัสผ่านสำหรับส่ง</label>
+          <input type="password" id="pwInput" autocomplete="current-password">
+          <div class="headrow">
+            <label class="check"><input type="checkbox" id="pwRemember" checked> จำไว้ในเครื่องนี้</label>
+            <button class="linkbtn" id="pwForget" type="button" hidden>ลืมรหัสผ่านในเครื่องนี้</button>
           </div>
-          <p class="note">ตั้งไว้เพื่อกันคนอื่นมาฝากไฟล์ ฝั่งรับใช้แค่รหัส 6 ตัว ไม่ต้องใช้รหัสผ่านนี้</p>
+          <p class="note">ฝั่งรับใช้แค่รหัส 8 ตัว ไม่ต้องใช้รหัสผ่านนี้ · เครื่องส่วนกลางไม่ควรติ๊ก "จำไว้"</p>
         </div>
         <button class="btn primary" id="sendBtn" type="button">ส่งและรับรหัส</button>
         <div class="bar" id="sendBar" hidden><i></i></div>
@@ -200,7 +226,7 @@ footer{color:var(--muted);font-size:12px;text-align:center}
     <div class="box">
       <h2>พิมพ์รหัส</h2>
       <form id="recvForm" class="panel" style="gap:10px">
-        <input type="text" id="codeInput" class="codein" maxlength="12" placeholder="XXXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <input type="text" id="codeInput" class="codein" maxlength="19" placeholder="XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
         <button class="btn primary" id="recvBtn" type="submit">เปิดกล่อง</button>
       </form>
       <p class="msg" id="recvMsg" hidden></p>
@@ -215,20 +241,27 @@ footer{color:var(--muted);font-size:12px;text-align:center}
     </div>
   </section>
 
-  <footer>ไฟล์ถูกเข้ารหัสในเบราว์เซอร์ก่อนส่ง เปิดได้เฉพาะผู้ที่มีรหัส และถูกลบอัตโนมัติเมื่อหมดเวลา</footer>
+  <footer>ไฟล์ถูกเข้ารหัสในเบราว์เซอร์ก่อนส่ง เปิดได้เฉพาะผู้ที่มีรหัส และถูกลบอัตโนมัติหลังหมดเวลา</footer>
 </div>
 <script>
 (() => {
+/* ---------- where things live ---------- */
+const OWNER = /\.github\.io$/i.test(location.hostname) ? location.hostname.split('.')[0] : 'titiwutnav-web';
+const DATA_REPO = 'beersbox-data';
+const BRANCH = 'main';
+const API = 'https://api.github.com/repos/' + OWNER + '/' + DATA_REPO;
+const RAW = 'https://raw.githubusercontent.com/' + OWNER + '/' + DATA_REPO + '/' + BRANCH + '/';
+
 const $ = id => document.getElementById(id);
 const ALPHA = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-const CHUNK = 20 * 1024 * 1024;
+const CODE_LEN = 8;
+const CHUNK = 10 * 1024 * 1024;
 const MAX_TOTAL = 200 * 1024 * 1024;
-const HIST_KEY = 'beersbox.history.v1', PIN_KEY = 'beersbox.pin.v1';
+const HIST_KEY = 'beersbox.gh.history.v1', PW_KEY = 'beersbox.gh.pw.v1';
 const te = new TextEncoder(), td = new TextDecoder();
 const fmtTime = new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
 
-let files = [], links = [], pinRequired = false;
-let recv = null;
+let files = [], links = [], config = null, token = null, recv = null;
 
 /* ---------- helpers ---------- */
 const store = {
@@ -236,18 +269,26 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
   del(k) { try { localStorage.removeItem(k); } catch {} },
 };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 const fmtSize = n => n < 1024 ? n + ' B' : n < 1048576 ? (n/1024).toFixed(1) + ' KB' : (n/1048576).toFixed(1) + ' MB';
 const norm = s => (s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-const randCode = (n = 6) => { const r = crypto.getRandomValues(new Uint32Array(n)); let s = ''; for (const v of r) s += ALPHA[v % ALPHA.length]; return s; };
-const toB64 = buf => { const u = new Uint8Array(buf); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); };
-const fromB64 = s => { const bin = atob(s); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
-async function lookupId(code) { const h = await crypto.subtle.digest('SHA-256', te.encode('kongfak-lookup:' + code)); return [...new Uint8Array(h)].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 40); }
-async function deriveKey(code, lid) {
-  const base = await crypto.subtle.importKey('raw', te.encode(code), 'PBKDF2', false, ['deriveKey']);
-  return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: te.encode('kongfak-v1:' + lid), iterations: 250000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+const pretty = c => c.length === 8 ? c.slice(0, 4) + '-' + c.slice(4) : c;
+const randCode = () => { const r = crypto.getRandomValues(new Uint32Array(CODE_LEN)); let s = ''; for (const v of r) s += ALPHA[v % ALPHA.length]; return s; };
+const randHex = n => [...crypto.getRandomValues(new Uint8Array(n))].map(b => b.toString(16).padStart(2, '0')).join('');
+const toB64 = buf => { const u = buf instanceof Uint8Array ? buf : new Uint8Array(buf); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); };
+const fromB64 = s => { const bin = atob(s.replace(/\s/g, '')); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
+const utf8B64 = str => toB64(te.encode(str));
+
+async function pbkdf2Bits(secret, salt, iterations, bits) {
+  const base = await crypto.subtle.importKey('raw', te.encode(secret), 'PBKDF2', false, ['deriveBits']);
+  return new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: typeof salt === 'string' ? te.encode(salt) : salt, iterations, hash: 'SHA-256' }, base, bits));
 }
+async function aesKey(raw) { return crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']); }
+async function lookupId(code) { return [...await pbkdf2Bits(code, 'beersbox-lookup-v2', 300000, 160)].map(b => b.toString(16).padStart(2, '0')).join(''); }
+async function codeKey(code, lid) { return aesKey(await pbkdf2Bits(code, 'beersbox-key-v2:' + lid, 300000, 256)); }
 const enc = (key, iv, data) => crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
 const dec = (key, iv, data) => crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
+
 function show(el, text, kind) { el.textContent = text; el.className = 'msg' + (kind ? ' ' + kind : ''); el.hidden = !text; }
 async function copy(text, btn) {
   const old = btn.textContent;
@@ -255,31 +296,108 @@ async function copy(text, btn) {
   catch { btn.textContent = text; }
   setTimeout(() => btn.textContent = old, 1600);
 }
-function renderDigits(el, code) { el.replaceChildren(...[...code].map(c => { const s = document.createElement('span'); s.textContent = c; return s; })); }
-const pinHeader = () => { const p = $('pinInput').value; return p ? { 'x-send-pin': p } : {}; };
-class ApiError extends Error { constructor(status, code) { super(code); this.status = status; this.code = code; } }
-async function api(method, path, body, headers = {}) {
-  const r = await fetch(path, { method, body, headers });
-  let data = null; try { data = await r.json(); } catch {}
-  if (!r.ok) throw new ApiError(r.status, data && data.error || 'http_' + r.status);
-  return data;
-}
-function uploadChunk(buf, ttl, onProgress) {
-  return new Promise((res, rej) => {
-    const x = new XMLHttpRequest();
-    x.open('POST', '/api/blob?ttl=' + ttl);
-    for (const [k, v] of Object.entries(pinHeader())) x.setRequestHeader(k, v);
-    x.upload.onprogress = e => e.lengthComputable && onProgress(e.loaded);
-    x.onload = () => { let d = null; try { d = JSON.parse(x.responseText); } catch {} x.status < 300 && d ? res(d) : rej(new ApiError(x.status, d && d.error || 'http_' + x.status)); };
-    x.onerror = () => rej(new ApiError(0, 'network'));
-    x.send(buf);
-  });
+function renderDigits(el, code) {
+  el.replaceChildren(...[...pretty(code)].map(c => { const s = document.createElement('span'); s.textContent = c; if (c === '-') s.className = 'sep'; return s; }));
 }
 function saveBlob(name, blob) {
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 60000);
 }
+
+/* ---------- GitHub API ---------- */
+class GhError extends Error { constructor(status, message) { super(message || 'http_' + status); this.status = status; } }
+function gh(method, path, body, onProgress) {
+  return new Promise((res, rej) => {
+    const x = new XMLHttpRequest();
+    x.open(method, API + path);
+    x.setRequestHeader('Accept', 'application/vnd.github+json');
+    x.setRequestHeader('X-GitHub-Api-Version', '2022-11-28');
+    if (token) x.setRequestHeader('Authorization', 'Bearer ' + token);
+    if (body) x.setRequestHeader('Content-Type', 'application/json');
+    if (onProgress) x.upload.onprogress = e => e.lengthComputable && onProgress(e.loaded / e.total);
+    x.onload = () => { let d = null; try { d = JSON.parse(x.responseText); } catch {} x.status < 300 ? res(d) : rej(new GhError(x.status, d && d.message)); };
+    x.onerror = () => rej(new GhError(0, 'network'));
+    x.send(body ? JSON.stringify(body) : null);
+  });
+}
+async function ghRetry(fn) {
+  for (let i = 0; ; i++) {
+    try { return await fn(); }
+    catch (e) {
+      const retry = e.status === 0 || e.status === 409 || e.status >= 500;
+      if (!retry || i >= 3) throw e;
+      await sleep(800 * (i + 1) + Math.random() * 600);
+    }
+  }
+}
+const putFile = (path, b64, message, onProgress) => ghRetry(() => gh('PUT', '/contents/' + path, { message, content: b64, branch: BRANCH }, onProgress));
+async function deleteFile(path, sha) {
+  try {
+    if (!sha) sha = (await gh('GET', '/contents/' + path + '?ref=' + BRANCH)).sha;
+    await ghRetry(() => gh('DELETE', '/contents/' + path, { message: 'delete ' + path, sha, branch: BRANCH }));
+  } catch (e) {
+    if (e.status === 404) return;
+    if (e.status === 409 || e.status === 422) { const cur = await gh('GET', '/contents/' + path + '?ref=' + BRANCH).catch(() => null); if (cur) await gh('DELETE', '/contents/' + path, { message: 'delete ' + path, sha: cur.sha, branch: BRANCH }); return; }
+    throw e;
+  }
+}
+// Public read: raw first (fast, no rate limit); API as fallback because raw caches 404s for a few minutes.
+async function readPublic(path, asJson) {
+  let r = await fetch(RAW + path + '?v=' + Date.now(), { cache: 'no-store' }).catch(() => null);
+  if (!r || r.status === 404) {
+    r = await fetch(API + '/contents/' + path + '?ref=' + BRANCH, { headers: { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' }).catch(() => null);
+  }
+  if (!r) throw new GhError(0, 'network');
+  if (!r.ok) throw new GhError(r.status);
+  return asJson ? r.json() : r.arrayBuffer();
+}
+
+/* ---------- send password / token ---------- */
+async function unlock() {
+  if (token) return token;
+  if (!config) throw new Error('ยังไม่ได้ตั้งค่าครั้งแรก');
+  const pw = $('pwInput').value;
+  if (!pw) { $('pwInput').focus(); throw new Error('ใส่รหัสผ่านสำหรับส่งก่อน'); }
+  try {
+    const k = await aesKey(await pbkdf2Bits(pw, fromB64(config.salt), config.iter, 256));
+    token = td.decode(await dec(k, fromB64(config.iv), fromB64(config.ct)));
+  } catch { store.del(PW_KEY); $('pwForget').hidden = true; throw new Error('รหัสผ่านสำหรับส่งไม่ถูกต้อง'); }
+  if ($('pwRemember').checked) { store.set(PW_KEY, pw); $('pwForget').hidden = false; }
+  return token;
+}
+$('pwInput').addEventListener('input', () => { token = null; });
+$('pwForget').onclick = () => { store.del(PW_KEY); $('pwInput').value = ''; token = null; $('pwForget').hidden = true; };
+
+async function setup() {
+  const msg = $('setupMsg'); show(msg, '');
+  const tok = $('setupToken').value.trim(), pw = $('setupPw').value, pw2 = $('setupPw2').value;
+  if (!tok) return show(msg, 'วาง GitHub token ก่อน', 'err');
+  if (pw.length < 10) return show(msg, 'รหัสผ่านสำหรับส่งต้องยาวอย่างน้อย 10 ตัว', 'err');
+  if (pw !== pw2) return show(msg, 'รหัสผ่านสองช่องไม่ตรงกัน', 'err');
+  const btn = $('setupBtn'); btn.disabled = true; btn.textContent = 'กำลังตรวจ token…';
+  try {
+    token = tok;
+    let repo;
+    try { repo = await gh('GET', ''); }
+    catch (e) { token = null; throw new Error(e.status === 401 ? 'token ไม่ถูกต้องหรือหมดอายุ' : e.status === 404 ? `token นี้มองไม่เห็น repo ${DATA_REPO} ตรวจขั้นที่ 2 อีกครั้ง` : 'ตรวจ token ไม่สำเร็จ ลองใหม่'); }
+    if (repo && repo.permissions && repo.permissions.push === false) { token = null; throw new Error('token นี้ยังเขียน repo ไม่ได้ ตรวจขั้นที่ 3 (Contents: Read and write)'); }
+    btn.textContent = 'กำลังบันทึก…';
+    const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12)), iter = 600000;
+    const k = await aesKey(await pbkdf2Bits(pw, salt, iter, 256));
+    const cfg = { v: 1, iter, salt: toB64(salt), iv: toB64(iv), ct: toB64(await enc(k, iv, te.encode(tok))) };
+    let sha;
+    try { sha = (await gh('GET', '/contents/config.json?ref=' + BRANCH)).sha; } catch {}
+    await ghRetry(() => gh('PUT', '/contents/config.json', { message: 'setup', content: utf8B64(JSON.stringify(cfg, null, 2)), branch: BRANCH, ...(sha ? { sha } : {}) }));
+    config = cfg;
+    $('pwInput').value = pw; $('pwRemember').checked = true; store.set(PW_KEY, pw); $('pwForget').hidden = false;
+    $('setupToken').value = $('setupPw').value = $('setupPw2').value = '';
+    $('setupBox').hidden = true; $('sendForm').hidden = false; $('pwField').hidden = false;
+    show($('sendMsg'), 'ตั้งค่าเสร็จแล้ว เครื่องอื่นใช้แค่รหัสผ่านนี้ก็ส่งได้', 'ok');
+  } catch (e) { show(msg, e.message, 'err'); }
+  finally { btn.disabled = false; btn.textContent = 'บันทึกการตั้งค่า'; }
+}
+$('setupBtn').onclick = setup;
 
 /* ---------- tabs ---------- */
 function setTab(t) {
@@ -293,10 +411,11 @@ $('tabRecv').onclick = () => setTab('recv');
 
 /* ---------- send: picking ---------- */
 function addFiles(list) { for (const f of list) if (f && f.size > 0) files.push(f); renderFiles(); }
+const kindOf = n => (n.includes('.') ? n.split('.').pop() : 'FILE').slice(0, 5).toUpperCase();
 function renderFiles() {
   $('fileList').replaceChildren(...files.map((f, i) => {
     const li = document.createElement('li'); li.className = 'row';
-    const k = document.createElement('span'); k.className = 'kind'; k.textContent = (f.name.includes('.') ? f.name.split('.').pop() : 'FILE').slice(0, 5).toUpperCase();
+    const k = document.createElement('span'); k.className = 'kind'; k.textContent = kindOf(f.name);
     const n = document.createElement('span'); n.className = 'name'; n.textContent = f.name;
     const m = document.createElement('span'); m.className = 'meta'; m.textContent = fmtSize(f.size);
     const x = document.createElement('button'); x.className = 'x'; x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'เอาออก ' + f.name);
@@ -335,14 +454,12 @@ document.querySelectorAll('input[name=codeMode]').forEach(r => r.onchange = () =
 
 /* ---------- send ---------- */
 const sendErr = e => {
-  const c = e && e.code;
-  if (c === 'bad_pin') return 'รหัสผ่านสำหรับส่งไม่ถูกต้อง';
-  if (c === 'code_taken') return 'รหัสนี้มีคนใช้อยู่ ลองรหัสอื่น';
-  if (c === 'chunk_too_large' || c === 'too_large') return 'ไฟล์ใหญ่เกินที่ระบบรับได้';
-  if (c === 'network') return 'อินเทอร์เน็ตขัดข้องระหว่างส่ง ลองใหม่อีกครั้ง';
-  if (e && e.status === 429) return 'วันนี้ส่งครบโควตาฟรีแล้ว ลองใหม่พรุ่งนี้';
-  if (e && e.status >= 500) return 'เซิร์ฟเวอร์ขัดข้อง ลองใหม่อีกครั้ง';
-  return e && e.message && !e.code ? e.message : 'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง';
+  if (!(e instanceof GhError)) return e && e.message || 'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง';
+  if (e.status === 401) return 'GitHub token หมดอายุหรือถูกยกเลิก ต้องตั้งค่าใหม่ (ลบ config.json ใน repo ' + DATA_REPO + ' แล้วเปิดหน้านี้อีกครั้ง)';
+  if (e.status === 403 || e.status === 429) return 'GitHub จำกัดการส่งชั่วคราว รอสักครู่แล้วลองใหม่';
+  if (e.status === 413 || e.status === 422) return 'ไฟล์ใหญ่เกินที่ GitHub รับได้';
+  if (e.status === 0) return 'อินเทอร์เน็ตขัดข้องระหว่างส่ง ลองใหม่อีกครั้ง';
+  return 'ส่งไม่สำเร็จ (' + e.status + ') ลองใหม่อีกครั้ง';
 };
 
 async function send() {
@@ -352,39 +469,40 @@ async function send() {
   if (!files.length && !links.length && !text) return show(msgEl, 'ยังไม่มีอะไรให้ส่ง เพิ่มไฟล์ ลิงก์ หรือข้อความก่อน', 'err');
   const total = files.reduce((a, f) => a + f.size, 0);
   if (total > MAX_TOTAL) return show(msgEl, `ไฟล์รวม ${fmtSize(total)} เกิน 200 MB แบ่งส่งเป็นหลายรอบ`, 'err');
-  if (pinRequired && !$('pinInput').value) { $('pinInput').focus(); return show(msgEl, 'ใส่รหัสผ่านสำหรับส่งก่อน', 'err'); }
 
-  const btn = $('sendBtn'); btn.disabled = true; btn.textContent = 'กำลังเตรียม…';
+  const btn = $('sendBtn'); btn.disabled = true; btn.textContent = 'กำลังปลดล็อก…';
   const bar = $('sendBar'), fill = bar.firstElementChild; bar.hidden = false; fill.style.width = '2%';
   const ttl = Number($('expiry').value);
   const uploaded = [];
   try {
-    if (pinRequired) { await api('POST', '/api/check-pin', null, pinHeader()); store.set(PIN_KEY, $('pinInput').value); }
+    await unlock();
+    btn.textContent = 'กำลังเตรียมรหัส…';
     let code, lid;
+    const taken = async l => { try { await gh('GET', '/contents/d/' + l + '.json?ref=' + BRANCH); return true; } catch (e) { if (e.status === 404) return false; throw e; } };
     if ($('modeCustom').checked) {
       code = norm($('customCode').value);
-      if (code.length < 6) throw new Error('รหัสที่ตั้งเองต้องมีอย่างน้อย 6 ตัว (A–Z, 0–9)');
+      if (code.length < 8) throw new Error('รหัสที่ตั้งเองต้องมีอย่างน้อย 8 ตัว (A–Z, 0–9)');
       lid = await lookupId(code);
-      if ((await fetch('/api/drop/' + lid)).status !== 404) throw new Error('รหัสนี้มีคนใช้อยู่ ลองรหัสอื่น');
+      if (await taken(lid)) throw new Error('รหัสนี้มีคนใช้อยู่ ลองรหัสอื่น');
     } else {
-      for (let i = 0; i < 6; i++) { code = randCode(6); lid = await lookupId(code); if ((await fetch('/api/drop/' + lid)).status === 404) break; }
+      for (let i = 0; i < 4; i++) { code = randCode(); lid = await lookupId(code); if (!(await taken(lid))) break; }
     }
-    btn.textContent = 'กำลังเข้ารหัส…';
-    const key = await deriveKey(code, lid);
+    const key = await codeKey(code, lid);
     const items = [];
     let done = 0;
     for (const f of files) {
       const chunks = [];
       for (let off = 0; off < f.size; off += CHUNK) {
         btn.textContent = `กำลังส่ง ${f.name}`;
+        const part = Math.min(CHUNK, f.size - off);
         const iv = crypto.getRandomValues(new Uint8Array(12));
         const ct = await enc(key, iv, await f.slice(off, off + CHUNK).arrayBuffer());
-        const part = Math.min(CHUNK, f.size - off);
-        const res = await uploadChunk(ct, ttl, loaded => {
-          fill.style.width = Math.max(4, Math.round((done + part * loaded / ct.byteLength) / total * 94)) + '%';
+        const path = 'b/' + Date.now() + '-' + randHex(12) + '.bin';
+        const res = await putFile(path, toB64(ct), 'add chunk', p => {
+          fill.style.width = Math.max(4, Math.round((done + part * p) / total * 94)) + '%';
         });
-        uploaded.push(res.id);
-        chunks.push({ a: res.id, iv: toB64(iv) });
+        uploaded.push({ path, sha: res && res.content && res.content.sha });
+        chunks.push({ p: path, iv: toB64(iv) });
         done += part;
       }
       items.push({ t: 'file', name: f.name, size: f.size, mime: f.type || '', chunks });
@@ -394,10 +512,10 @@ async function send() {
 
     btn.textContent = 'กำลังบันทึก…';
     const iv = crypto.getRandomValues(new Uint8Array(12));
-    const ct = await enc(key, iv, te.encode(JSON.stringify({ v: 1, items })));
-    const put = await api('PUT', '/api/drop/' + lid + '?ttl=' + ttl,
-      JSON.stringify({ iv: toB64(iv), ct: toB64(ct), blobs: uploaded }),
-      { 'content-type': 'application/json', ...pinHeader() });
+    const ct = await enc(key, iv, te.encode(JSON.stringify({ v: 2, items })));
+    const now = Date.now(), expiresAt = now + ttl * 1000;
+    const drop = { v: 2, iv: toB64(iv), ct: toB64(ct), createdAt: now, expiresAt, blobs: uploaded.map(u => u.path) };
+    const res = await putFile('d/' + lid + '.json', utf8B64(JSON.stringify(drop)), 'add drop');
     fill.style.width = '100%';
 
     const parts = [];
@@ -406,19 +524,20 @@ async function send() {
     if (text) parts.push('ข้อความ');
     const summary = parts.join(' · ');
     const hist = store.get(HIST_KEY, []);
-    hist.unshift({ code, lid, summary, firstName: files[0]?.name || links[0] || text.slice(0, 60), createdAt: Date.now(), expiresAt: put.expiresAt, deleteToken: put.deleteToken });
+    hist.unshift({ code, lid, summary, firstName: files[0]?.name || links[0] || text.slice(0, 60), createdAt: now, expiresAt,
+      paths: [{ path: 'd/' + lid + '.json', sha: res && res.content && res.content.sha }, ...uploaded] });
     store.set(HIST_KEY, hist.slice(0, 50)); renderHist();
 
     renderDigits($('resultDigits'), code);
     const info = $('resultInfo'); info.textContent = '';
-    info.append(`${summary} · ใช้ได้ถึง ${fmtTime.format(put.expiresAt)}`, document.createElement('br'), 'บนอีกเครื่อง เปิด ');
-    const h = document.createElement('span'); h.className = 'host'; h.textContent = location.host; info.append(h, ' กดแท็บ "รับ" แล้วพิมพ์รหัสนี้');
-    $('copyCode').onclick = () => copy(code, $('copyCode'));
+    info.append(`${summary} · ใช้ได้ถึง ${fmtTime.format(expiresAt)}`, document.createElement('br'), 'บนอีกเครื่อง เปิด ');
+    const h = document.createElement('span'); h.className = 'host'; h.textContent = location.host + location.pathname.replace(/index\.html$/, '').replace(/\/$/, '');
+    info.append(h, ' กดแท็บ "รับ" แล้วพิมพ์รหัสนี้');
+    $('copyCode').onclick = () => copy(pretty(code), $('copyCode'));
     $('sendForm').hidden = true; $('sendResult').hidden = false;
     files = []; links = []; $('msgInput').value = ''; $('customCode').value = ''; renderFiles(); renderLinks();
   } catch (e) {
-    for (const id of uploaded) fetch('/api/blob/' + id, { method: 'DELETE', headers: pinHeader() }).catch(() => {});
-    if (e && e.code === 'bad_pin') store.del(PIN_KEY);
+    for (const u of uploaded) deleteFile(u.path, u.sha).catch(() => {});
     show(msgEl, sendErr(e), 'err');
   } finally {
     btn.disabled = false; btn.textContent = 'ส่งและรับรหัส';
@@ -437,7 +556,7 @@ function renderHist() {
   $('clearExpired').hidden = !recs.some(r => r.expiresAt < now);
   el.replaceChildren(...recs.map(r => {
     const row = document.createElement('div'); row.className = 'hrow';
-    const c = document.createElement('code'); c.textContent = r.code;
+    const c = document.createElement('code'); c.textContent = pretty(r.code);
     const info = document.createElement('div'); info.className = 'info';
     const b = document.createElement('b'); b.textContent = r.firstName || r.summary;
     const s = document.createElement('span');
@@ -445,16 +564,19 @@ function renderHist() {
     s.textContent = `${r.summary} · ส่งเมื่อ ${fmtTime.format(r.createdAt)} `;
     if (expired) { const p = document.createElement('span'); p.className = 'pill exp'; p.textContent = 'หมดอายุ'; s.append(p); }
     else s.append(`· ถึง ${fmtTime.format(r.expiresAt)}`);
-    info.append(b, s);
+    const err = document.createElement('span'); err.style.color = 'var(--err)'; err.style.display = 'block';
+    info.append(b, s, err);
     const acts = document.createElement('div'); acts.className = 'acts';
     const cp = document.createElement('button'); cp.className = 'btn small'; cp.type = 'button'; cp.textContent = 'คัดลอก';
-    cp.onclick = () => copy(r.code, cp);
+    cp.onclick = () => copy(pretty(r.code), cp);
     const del = document.createElement('button'); del.className = 'btn small danger'; del.type = 'button'; del.textContent = 'ลบ';
     del.onclick = async () => {
       if (!del.dataset.arm) { del.dataset.arm = 1; del.textContent = 'ยืนยันลบ'; setTimeout(() => { delete del.dataset.arm; del.textContent = 'ลบ'; }, 3000); return; }
-      del.disabled = true; del.textContent = 'กำลังลบ…';
-      if (!expired) { try { await api('DELETE', '/api/drop/' + r.lid, null, { 'x-delete-token': r.deleteToken }); } catch {} }
-      store.set(HIST_KEY, store.get(HIST_KEY, []).filter(x => x.lid !== r.lid)); renderHist();
+      del.disabled = true; del.textContent = 'กำลังลบ…'; err.textContent = '';
+      try {
+        if (!expired) { await unlock(); for (const p of r.paths || []) await deleteFile(p.path, p.sha); }
+        store.set(HIST_KEY, store.get(HIST_KEY, []).filter(x => x.lid !== r.lid)); renderHist();
+      } catch (e) { err.textContent = sendErr(e); del.disabled = false; del.textContent = 'ลบ'; }
     };
     acts.append(cp, del);
     row.append(c, info, acts); return row;
@@ -467,18 +589,19 @@ async function openBox(e) {
   e && e.preventDefault();
   const msgEl = $('recvMsg'); show(msgEl, ''); $('recvBox').hidden = true; recv = null;
   const code = norm($('codeInput').value);
-  if (code.length < 4) return show(msgEl, 'พิมพ์รหัสให้ครบก่อน', 'err');
+  if (code.length < 8) return show(msgEl, 'พิมพ์รหัสให้ครบ 8 ตัวก่อน', 'err');
   const btn = $('recvBtn'); btn.disabled = true; btn.textContent = 'กำลังเปิด…';
   try {
     const lid = await lookupId(code);
     let data;
-    try { data = await api('GET', '/api/drop/' + lid); }
+    try { data = await readPublic('d/' + lid + '.json', true); }
     catch (err) {
-      if (err.status === 404) throw new Error('ไม่พบรหัสนี้ ตรวจตัวอักษรอีกครั้ง ถ้าเพิ่งส่งมาไม่ถึงนาที รอสักครู่แล้วลองใหม่');
-      if (err.status === 410) throw new Error('รหัสนี้หมดอายุแล้ว ขอให้ผู้ส่งส่งใหม่');
+      if (err.status === 404) throw new Error('ไม่พบรหัสนี้ ตรวจตัวอักษรอีกครั้ง หรือกล่องอาจถูกลบไปแล้ว');
+      if (err.status === 403 || err.status === 429) throw new Error('GitHub จำกัดการเปิดชั่วคราว รอสักครู่แล้วลองใหม่');
       throw new Error('เปิดกล่องไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วลองใหม่');
     }
-    const key = await deriveKey(code, lid);
+    if (data.expiresAt && Date.now() > data.expiresAt) throw new Error('รหัสนี้หมดอายุแล้ว ขอให้ผู้ส่งส่งใหม่');
+    const key = await codeKey(code, lid);
     let manifest;
     try { manifest = JSON.parse(td.decode(await dec(key, fromB64(data.iv), fromB64(data.ct)))); }
     catch { throw new Error('เปิดกล่องไม่สำเร็จ รหัสอาจไม่ถูกต้อง'); }
@@ -492,9 +615,10 @@ async function fetchFile(it, onProgress) {
   const parts = [];
   let i = 0;
   for (const c of it.chunks) {
-    const r = await fetch('/api/blob/' + c.a);
-    if (!r.ok) throw new Error(r.status === 404 ? 'ไฟล์นี้ถูกลบหรือหมดอายุแล้ว' : 'ดาวน์โหลดไม่สำเร็จ ลองใหม่อีกครั้ง');
-    parts.push(await dec(recv.key, fromB64(c.iv), await r.arrayBuffer()));
+    let buf;
+    try { buf = await readPublic(c.p, false); }
+    catch (e) { throw new Error(e.status === 404 ? 'ไฟล์นี้ถูกลบหรือหมดอายุแล้ว' : 'ดาวน์โหลดไม่สำเร็จ ลองใหม่อีกครั้ง'); }
+    parts.push(await dec(recv.key, fromB64(c.iv), buf));
     onProgress && onProgress(++i / it.chunks.length);
   }
   return new Blob(parts, { type: it.mime || 'application/octet-stream' });
@@ -508,7 +632,7 @@ function renderRecv() {
     const top = document.createElement('div'); top.className = 'top';
     const k = document.createElement('span'); k.className = 'kind';
     if (it.t === 'file') {
-      k.textContent = (it.name.includes('.') ? it.name.split('.').pop() : 'FILE').slice(0, 5).toUpperCase();
+      k.textContent = kindOf(it.name);
       const n = document.createElement('span'); n.className = 'name'; n.textContent = it.name;
       const m = document.createElement('span'); m.className = 'meta'; m.textContent = fmtSize(it.size); m.style.color = 'var(--muted)'; m.style.fontSize = '13px';
       const b = document.createElement('button'); b.className = 'btn small primary'; b.type = 'button'; b.textContent = 'ดาวน์โหลด';
@@ -546,7 +670,11 @@ function renderRecv() {
   $('recvBox').hidden = false;
 }
 $('recvForm').addEventListener('submit', openBox);
-for (const id of ['codeInput', 'customCode']) $(id).addEventListener('input', e => { const v = norm(e.target.value); if (v !== e.target.value) e.target.value = v; });
+$('customCode').addEventListener('input', e => { const v = norm(e.target.value); if (v !== e.target.value) e.target.value = v; });
+$('codeInput').addEventListener('input', e => {
+  const v = norm(e.target.value).slice(0, 16); const p = v.length > 4 && v.length <= 8 ? v.slice(0, 4) + '-' + v.slice(4) : v;
+  if (p !== e.target.value) e.target.value = p;
+});
 $('dlAll').onclick = async () => {
   const b = $('dlAll'); b.disabled = true; b.textContent = 'กำลังรวมไฟล์…';
   try {
@@ -563,13 +691,16 @@ $('dlAll').onclick = async () => {
 
 /* ---------- boot ---------- */
 renderHist();
+$('dataRepoName').textContent = OWNER + '/' + DATA_REPO;
+const savedPw = store.get(PW_KEY, '');
+if (savedPw) { $('pwInput').value = savedPw; $('pwForget').hidden = false; }
 const hashCode = norm(decodeURIComponent(location.hash.slice(1)));
-if (hashCode.length >= 6) { setTab('recv'); $('codeInput').value = hashCode; openBox(); }
+if (hashCode.length >= 8) { setTab('recv'); $('codeInput').value = pretty(hashCode); openBox(); }
 else if (/^#(rcv|recv|receive|r)$/i.test(location.hash)) setTab('recv');
-fetch('/api/config').then(r => r.json()).then(c => {
-  pinRequired = !!c.pinRequired;
-  if (pinRequired) { $('pinField').hidden = false; $('pinInput').value = store.get(PIN_KEY, ''); }
-}).catch(() => {});
+readPublic('config.json', true).then(c => { config = c; }).catch(e => {
+  if (e.status === 404) { $('setupBox').hidden = false; $('sendForm').hidden = true; }
+  else show($('sendMsg'), 'เชื่อมต่อ GitHub ไม่ได้ ฝั่งส่งอาจใช้งานไม่ได้ชั่วคราว (ฝั่งรับยังใช้ได้)', 'warn');
+});
 })();
 </script>
 </body>
